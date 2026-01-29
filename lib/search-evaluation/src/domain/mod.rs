@@ -1,1 +1,1 @@
-mod label;
+pub mod label;
