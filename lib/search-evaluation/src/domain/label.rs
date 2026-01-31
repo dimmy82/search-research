@@ -54,6 +54,12 @@ impl Label {
         }
     }
 
+    pub fn get_gain(&self, document_id: &str) -> Option<f64> {
+        self.ideal_result_map
+            .get(document_id)
+            .map(|ir| ir.impairment_gain)
+    }
+
     pub fn i_dcg(&self) -> f64 {
         let mut score = 0.0;
         for (index, ir) in self.ideal_results.iter().enumerate() {
@@ -73,7 +79,6 @@ impl Label {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use approx::assert_relative_eq;
 
     #[test]
     fn test_labels_new() {
@@ -196,6 +201,49 @@ mod tests {
     }
 
     #[test]
+    fn test_label_get_gain() {
+        let label = Label {
+            query_id: "query1".to_string(),
+            ideal_results: vec![],
+            ideal_result_map: HashMap::from_iter(vec![
+                (
+                    "doc_1".to_string(),
+                    IdealResult {
+                        document_id: "doc_1".to_string(),
+                        impairment_gain: 0.5,
+                    },
+                ),
+                (
+                    "doc_2".to_string(),
+                    IdealResult {
+                        document_id: "doc_2".to_string(),
+                        impairment_gain: 0.2,
+                    },
+                ),
+            ]),
+        };
+        let actual = label.get_gain("doc_2");
+        assert_eq!(actual, Some(0.2));
+    }
+
+    #[test]
+    fn test_label_get_gain_none() {
+        let label = Label {
+            query_id: "query1".to_string(),
+            ideal_results: vec![],
+            ideal_result_map: HashMap::from_iter(vec![(
+                "doc_1".to_string(),
+                IdealResult {
+                    document_id: "doc_1".to_string(),
+                    impairment_gain: 0.5,
+                },
+            )]),
+        };
+        let actual = label.get_gain("doc_2");
+        assert_eq!(actual, None);
+    }
+
+    #[test]
     fn test_label_i_dcg() {
         let label = Label {
             query_id: "query1".to_string(),
@@ -227,7 +275,7 @@ mod tests {
             ],
             ideal_result_map: HashMap::new(),
         };
-        assert_relative_eq!(
+        assert_eq!(
             label.i_dcg(),
             1.0 / log2(2.0) * 1.0
                 + 1.0 / log2(3.0) * 1.0
