@@ -54,7 +54,7 @@ impl Label {
         }
     }
 
-    pub fn score(&self) -> f64 {
+    pub fn i_dcg(&self) -> f64 {
         let mut score = 0.0;
         for (index, ir) in self.ideal_results.iter().enumerate() {
             println!("score: {}", score);
@@ -196,7 +196,7 @@ mod tests {
     }
 
     #[test]
-    fn test_label_score() {
+    fn test_label_i_dcg() {
         let label = Label {
             query_id: "query1".to_string(),
             ideal_results: vec![
@@ -228,7 +228,7 @@ mod tests {
             ideal_result_map: HashMap::new(),
         };
         assert_relative_eq!(
-            label.score(),
+            label.i_dcg(),
             1.0 / log2(2.0) * 1.0
                 + 1.0 / log2(3.0) * 1.0
                 + 1.0 / log2(4.0) * 0.5

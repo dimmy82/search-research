@@ -12,12 +12,12 @@ pub struct SearchResult {
 }
 
 pub struct EvaluationResult {
-    pub label_score: f64,
-    pub search_score: f64,
+    pub i_dcg: f64,
+    pub dcg: f64,
 }
 
 impl SearchResult {
-    pub fn score(&self, labels: &Labels) -> EvaluationResult {
+    pub fn dcg(&self, labels: &Labels) -> EvaluationResult {
         todo!()
     }
 }
