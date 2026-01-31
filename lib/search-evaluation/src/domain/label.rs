@@ -63,15 +63,8 @@ impl Label {
     pub fn i_dcg(&self) -> f64 {
         let mut score = 0.0;
         for (index, ir) in self.ideal_results.iter().enumerate() {
-            println!("score: {}", score);
             score += 1.0 / log2(index as f64 + 2.0) * ir.impairment_gain;
-            println!(
-                "add: {} * {}",
-                1.0 / log2(index as f64 + 2.0),
-                ir.impairment_gain
-            )
         }
-        println!("score: {}", score);
         score
     }
 }

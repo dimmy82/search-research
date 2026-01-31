@@ -10,4 +10,4 @@ fmt:
 	cargo fmt
 
 test:
-	cargo test
+	cargo test -- --nocapture
